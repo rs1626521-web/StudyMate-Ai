@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#7c5cff">
+  <title>StudyMate AI</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="authView" class="auth-wrap">
+  <div class="auth-card">
+    <img class="auth-logo-img" src="assets/studymate-logo.png" alt="StudyMate AI logo">
+    <h1>StudyMate AI</h1>
+    <p>Plan smarter. Learn easier. Prepare together.</p>
+    <div class="tabs"><button class="tab active" data-auth="login">Login</button><button class="tab" data-auth="register">Create account</button></div>
+    <form id="authForm">
+      <input id="name" placeholder="Your name" class="registerOnly">
+      <input id="email" type="text" inputmode="email" autocomplete="username" placeholder="Email or username" required>
+      <input id="password" type="password" placeholder="Password (6+ chars)" required>
+      <button class="btn primary">Continue</button>
+    </form>
+    <button id="forgotPasswordBtn" class="auth-link" type="button">Forgot password?</button>
+    <small id="authMsg"></small>
+
+    <div id="forgotView" class="forgot-view hidden">
+      <h3>Reset your password</h3>
+      <p>Enter your email. If an account exists, we'll send a secure reset link.</p>
+      <form id="forgotForm">
+        <input id="forgotEmail" type="text" inputmode="email" autocomplete="email" placeholder="Email or username" required>
+        <button class="btn primary">Send reset link</button>
+      </form>
+      <button id="backToLogin" class="auth-link" type="button">← Back to login</button>
+      <small id="forgotMsg"></small>
+    </div>
+  </div>
+</div>
+
+<div id="resetView" class="auth-wrap hidden">
+  <div class="auth-card">
+    <img class="auth-logo-img" src="assets/studymate-logo.png" alt="StudyMate AI logo">
+    <h1>Set a new password</h1>
+    <p>Choose a new password for your StudyMate account.</p>
+    <form id="resetForm">
+      <input id="resetPassword" type="password" placeholder="New password (6+ chars)" minlength="6" required>
+      <input id="resetPassword2" type="password" placeholder="Confirm new password" minlength="6" required>
+      <button class="btn primary">Update password</button>
+    </form>
+    <small id="resetMsg"></small>
+  </div>
+</div>
+
+<div id="appView" class="app hidden">
+  <aside id="sidebar">
+    <button id="sidebarToggle" class="sidebar-toggle" type="button" title="Collapse sidebar" aria-label="Collapse sidebar">‹</button>
+    <div class="brand">
+      <img class="brand-logo" src="assets/studymate-logo.png" alt="StudyMate AI logo">
+      <div class="brand-text"><b>StudyMate AI</b><small>Smart study coach</small></div>
+    </div>
+    <nav>
+      <button data-page="home" class="active"><span class="nav-icon">⌂</span><span class="nav-label">Dashboard</span></button>
+      <button data-page="setup"><span class="nav-icon">🎓</span><span class="nav-label">Education</span></button>
+      <button data-page="planner"><span class="nav-icon">⚡</span><span class="nav-label">Planner</span></button>
+      <button data-page="pyq"><span class="nav-icon">📄</span><span class="nav-label">PYQs</span></button>
+      <button data-page="assistant"><span class="nav-icon">🤖</span><span class="nav-label">AI Assistant</span></button>
+      <button data-page="friends"><span class="nav-icon">👥</span><span class="nav-label">Friends</span></button>
+    </nav>
+    <div class="sidebar-spacer"></div>
+    <button id="viewProfile" class="logout" type="button"><span class="nav-icon">👤</span><span class="nav-label">View Profile</span></button>
+    <button id="logout" class="logout"><span class="nav-icon">↪</span><span class="nav-label">Logout</span></button>
+  </aside>
+
+  <main>
+    <header>
+      <div class="header-left"><b id="hello">Hi!</b><small>Learn one smart step at a time.</small></div>
+      <div class="header-actions">
+        <div class="search-pill"><span>⌕</span><input id="globalSearch" placeholder="Search your chats, topics..." aria-label="Search"></div>
+        <button id="theme" class="icon-btn" title="Toggle theme" aria-label="Toggle theme">☾</button>
+        <div class="profile-pill"><div class="profile-avatar" id="profileAvatar">R</div><div class="profile-copy"><b id="profileName">Rahul</b><small>Keep learning 🚀</small></div></div>
+      </div>
+    </header>
+
+    <section id="home" class="page active">
+      <div class="hero"><div><span>AI STUDY COACH</span><h2>Your exam date tells us what to do next.</h2><p>Set your education details, connect with friends, analyze PYQs and let AI create the best next step.</p><button class="btn primary" onclick="go('setup')">Set up my education</button><button class="btn secondary" onclick="go('planner')">Generate Smart Planner</button></div><div class="count"><small>Next exam</small><strong id="days">—</strong><span id="examText">Set exam date to begin</span></div></div>
+      <div class="cards" id="stats"></div><div class="grid2"><div class="card"><h3>Today’s tasks</h3><div id="tasks"></div></div><div class="card"><h3>Next best step</h3><div id="nextStep"></div></div></div>
+    </section>
+
+    <section id="setup" class="page"><div class="head"><div><h2>School / College Setup</h2><p>Choose your level so subjects and exam dates are easy to manage.</p></div></div><div class="grid2"><div class="card"><div class="choice"><button id="school" class="choiceBtn" onclick="educationType('School')">🎒 School</button><button id="college" class="choiceBtn" onclick="educationType('College')">🎓 College</button></div><div id="eduFields"></div><button class="btn primary" onclick="saveEducation()">Save & Build Plan</button><div id="eduMsg"></div></div><div class="card"><h3>Exam dates</h3><div id="examList">Choose School or College.</div><button class="btn secondary" onclick="document.getElementById('tt').click()">Upload timetable</button><input type="file" id="tt" accept=".txt,.csv,.json" hidden></div></div></section>
+
+    <section id="planner" class="page"><div class="head"><div><h2>Smart Planner</h2><p>Exam date + subjects → priority plan.</p></div><button class="btn primary" onclick="generatePlan()">Generate Smart Planner</button></div><div class="grid2"><div class="card"><h3>Plan input</h3><label>Exam date<input id="examDate" type="date"></label><label>Subjects<input id="subjects" placeholder="DBMS, Java, OS"></label><label>Study time/day<select id="studyTime"><option value="10">10 minutes</option><option value="15">15 minutes</option><option value="20">20 minutes</option><option value="30">30 minutes</option><option value="45">45 minutes</option><option value="60" selected>1 hour</option><option value="90">1.5 hours</option><option value="120">2 hours</option><option value="180">3 hours</option><option value="240">4 hours</option></select></label><button class="btn secondary" onclick="useEducationSubjects()">Use my education subjects</button></div><div class="card"><h3>Plan result</h3><div id="planResult">Your generated plan appears here.</div></div></div><div class="card"><h3>Tasks</h3><div id="allTasks"></div><button class="btn secondary" onclick="addTaskPrompt()">+ Add task</button></div></section>
+
+    <section id="pyq" class="page"><div class="head"><div><h2>PYQ AI Analyzer</h2><p>Upload or paste previous questions to find repeated concepts and build a focused revision plan.</p></div></div><div class="grid2"><div class="card"><textarea id="pyqText" placeholder="Paste one question per line..."></textarea><div class="row"><input type="file" id="pyqFile" accept=".txt,.csv"><button class="btn primary" onclick="analyzePYQ()">Analyze PYQs</button></div></div><div class="card"><h3>Analysis</h3><div id="pyqResult">No analysis yet.</div></div></div></section>
+
+    <section id="assistant" class="page">
+      <div class="assistant-shell">
+        <div class="assistant-main card">
+          <div class="chat-topline"><span class="ai-badge"><img src="assets/studymate-logo.png" alt=""> StudyMate AI</span><span id="languageStatus" class="language-status">Auto-detected: Auto</span></div>
+          <div id="chat" class="chat" aria-live="polite"></div>
+          <div class="chatbar">
+            <button id="micBtn" class="round-input-btn" type="button" title="Speak" aria-label="Use microphone">🎙</button>
+            <input id="ask" placeholder="Ask anything about your study..." autocomplete="off">
+            <button id="langBtn" class="tool-btn" type="button" title="Change language">🌐 <span id="langBtnLabel">Auto</span></button>
+            <input id="lang" type="hidden" value="Auto">
+            <button id="sendBtn" class="btn primary send-btn" type="button" onclick="askAI()">Send</button>
+          </div>
+          <div class="chat-underbar"><div class="try-these"><span class="try-label">💡 Try these</span><button class="prompt" onclick="promptAI('Explain DBMS normalization in easy Hindi with an example.')">Explain a topic</button><button class="prompt" onclick="promptAI('Summarize this topic in 5 easy points.')">Summarize</button><button class="prompt" onclick="promptAI('Quiz me with 5 questions on SQL.')">Quiz me</button><button class="prompt" onclick="promptAI('Check my preparation and tell me what I can improve.')">Run a checkup</button><button class="prompt" onclick="promptAI('I have only 10 minutes. Give me an emergency revision plan.')">10-minute revision</button><button class="prompt more" onclick="promptAI('Create a short mind map for this topic and explain it.')">More</button></div></div>
+        </div>
+        <aside class="assistant-tools" aria-label="Chat tools">
+          <button id="previewDiagram" class="side-tool" type="button" title="Preview diagram"><span class="side-tool-icon">◉</span><b>Preview</b><small>Diagram</small></button>
+          <button id="chatHistoryBtn" class="side-tool" type="button" title="Chat history"><span class="side-tool-icon">◷</span><b>History</b><small>Chats</small></button>
+          <button id="clearChat" class="side-tool" type="button" title="Clear chat"><span class="side-tool-icon">⌫</span><b>Clear</b><small>Chat</small></button>
+          <button id="newChat" class="side-tool new-chat-tool" type="button" title="Start a new chat"><span class="side-tool-icon">＋</span><b>New</b><small>Chat</small></button>
+        </aside>
+      </div>
+    </section>
+
+    <section id="friends" class="page"><div class="head"><div><h2>Friends</h2><p>Follow → accept → connect → compare scores.</p></div><button class="btn primary" onclick="findFriend()">Find student</button></div><div class="grid2"><div class="card"><h3>Requests</h3><div id="requests"></div></div><div class="card"><h3>Connected</h3><div id="connected"></div></div></div><div class="card"><h3>Friends leaderboard</h3><table><thead><tr><th>Rank</th><th>Name</th><th>Readiness</th><th>Streak</th><th>Performance</th></tr></thead><tbody id="leaderboard"></tbody></table></div></section>
+  </main>
+</div>
+
+<div id="chatHistoryModal" class="modal hidden">
+  <div class="modal-backdrop" data-close="history"></div>
+  <div class="modal-card chat-history-card">
+    <div class="modal-head"><div><b>Chat History</b><small>Your previous StudyMate conversations</small></div><button id="closeChatHistory" class="icon-btn" type="button">×</button></div>
+    <div id="chatHistoryList" class="chat-history-list"></div>
+    <button id="historyNewChat" class="btn primary history-new-chat" type="button">＋ New Chat</button>
+  </div>
+</div>
+<div id="quizModal" class="modal hidden"><div class="modal-backdrop" data-close="quiz"></div><div class="modal-card quiz-card"><div class="modal-head"><div><b id="quizTitle">Quick Quiz</b><small id="quizSubtitle">5 questions · quick check</small></div><button id="closeQuiz" class="icon-btn" type="button">×</button></div><div id="quizBody"></div></div></div>
+<div id="languageMenu" class="floating-menu hidden">
+  <button data-language="Auto">✨ Auto</button><button data-language="Easy English">English</button><button data-language="Hindi">हिंदी</button><button data-language="Hinglish">Hinglish</button>
+</div>
+<div id="diagramModal" class="modal hidden"><div class="modal-backdrop" data-close="diagram"></div><div class="modal-card"><div class="modal-head"><div><b>Diagram Preview</b><small id="diagramSubtitle">Study visual</small></div><button id="closeDiagram" class="icon-btn" type="button">×</button></div><div id="diagramCanvas" class="diagram-canvas"><div class="diagram-placeholder"><div class="diagram-icon">✦</div><h3>Visual preview</h3><p>Your diagram will appear here when the diagram generator is connected.</p><small>Preview interaction is ready; real image generation is the next AI phase.</small></div></div></div></div>
+<div id="toast"></div>
+<script src="app.js"></script>
+
+<div id="profileModal" class="modal hidden">
+  <div class="modal-card profile-modal-card">
+    <button id="closeProfile" class="modal-close" type="button">×</button>
+    <div class="profile-big"><div class="profile-avatar" id="profileBigAvatar">R</div><div><h2 id="profileBigName">Student</h2><p id="profileBigEmail"></p></div></div>
+    <div id="profileDetails" class="profile-details"></div>
+  </div>
+</div>
+
+</body>
+</html>
